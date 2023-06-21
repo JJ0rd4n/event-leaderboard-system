@@ -5,10 +5,11 @@ import supabase from "../../server/supabaseClient"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function NewEventsModal() {
+export default function NewParticipantsModal() {
 
   let [isOpen, setIsOpen] = useState(false)
   const [eventName, setEventName] = useState("")
+  const [numOfWorkouts, setNumOfWorkouts] = useState(null)
   const [eventDate, setEventDate] = useState(new Date());
   const [formError, setFormError] = useState(null);
 
@@ -24,27 +25,27 @@ export default function NewEventsModal() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if(!eventName || !eventDate) {
+    if(!eventName || !eventDate || !numOfWorkouts) {
       setFormError("Fill in all fields")
       return
     }
 
     const { data, error } = await supabase
       .from('events')
-      .insert([{ eventName, eventDate }])
+      .insert([{ eventName, eventDate, numOfWorkouts}])
 
     if (error) {
       console.log(error)
       setFormError('Please fill in all the fields correctly.')
     }
+
     if (data) {
       console.log(data)
       setFormError(null)
-      navigate('/')
     }
-
     closeModal()
-    
+    navigate('/')
+    navigate(0)
   }
 
   return (
@@ -88,14 +89,14 @@ export default function NewEventsModal() {
                     as="h3"
                     className="text-2xl font-medium leading-6 text-gray-900 pb-4"
                   >
-                    Add an Event
+                    Add a Participant
                   </Dialog.Title>
                   <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                       <label
                         htmlFor="eventName"
-                        className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                        className="mb-2 block text-md font-medium text-gray-900 dark:text-white"
                       >
-                        Event Name:
+                        Participant Name:
                       </label>
                       <input
                         type="text"
@@ -103,11 +104,34 @@ export default function NewEventsModal() {
                         value={eventName}
                         onChange={(e) => setEventName(e.target.value)}
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        />
+                      />
+
+                      <label
+                        htmlFor="numOfWorkouts"
+                        className="mb-2 block text-md font-medium text-gray-900 dark:text-white"
+                      >
+                        Number of Workouts:
+                      </label>
+                      <select 
+                      id=""
+                      className="mb-2 block"
+                      onChange={(e) => setNumOfWorkouts(e.target.value)}>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                      </select>
+                        
                       <div className="pb-64">
                         <label
                           htmlFor="eventDate"
-                          className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                          className="mb-2 block text-md font-medium text-gray-900 dark:text-white"
                         >
                           Event Date
                         </label>
@@ -128,7 +152,6 @@ export default function NewEventsModal() {
           </div>
         </Dialog>
       </Transition>
-      
     </>
   )
 }

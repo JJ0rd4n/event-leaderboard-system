@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import supabase from '../../server/supabaseClient'
+import ParticipantLine from '../participants/ParticipantLine'
 
 const EventView = () => {
     const { id } = useParams()
@@ -23,45 +24,48 @@ const EventView = () => {
             .single()
     
         if (error) {
-            console.log(error.message, error.hint)
             navigate('/', { replace: true })
+            console.log(error.message, error.hint)
         }
         if (data) {
-            console.log(eventName)
             setEventName(data.eventName)
         }
-        
     }
     
     async function fetchParticipants() {
         const { data, error } = await supabase
-            .from("events")
-            .select("*, participants(*)")
+            .from("participants")
+            .select()
+            .eq('event_id', id)
             
             
         if(error){
             setFetchError(error)
             setParticipants([])
-            console.log(error.message)
+            console.log(error.message, error.hint)
         }
         if(data){
             setParticipants(data);
             setFetchError(null)
-            console.log(participants)
         }
     }
-
 
     return (
         <div>
             {fetchError && (<p>{fetchError.message} : {fetchError.hint}</p>)}
-            <h2>Participants of Event: {eventName}</h2>
+            <h2>Showing Leaderboard of Event: {eventName}</h2>
+            <div className='w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto'>
+                <div className='my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'>
+                    <span>Name</span>
+                    <span className='hidden md:grid'>Workouts</span>
+                    <span className='hidden sm:grid'>Method</span>
+                </div>
                 <ul>
-
+                    {participants.map((participant) => (
+                        <ParticipantLine key={participant.id} participant={participant} />
+                    ))}
                 </ul>
-            
-            <ul>
-            </ul>
+            </div>
         </div>
     )
 }
