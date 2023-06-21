@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import supabaseClient from "../server/supabaseClient";
 import NewEventsModal from "../components/modals/EventsModal";
-import EventCard from "../components/EventCard"
+import EventCard from "../components/events/EventCard"
 
 const Dashboard = () => {
     const [events, setEvents] = useState([]);
@@ -24,18 +24,18 @@ const Dashboard = () => {
         setFetchError(null)
       }
     }
+    
     return (
         <div>
-            <NewEventsModal />
-            <main>
+          <NewEventsModal />
+          <main>
             {fetchError && (<p>{fetchError.message} : {fetchError.hint}</p>)}
             <ul>
                 {events.map((event) => (
                 <EventCard key={event.id} event={event} />
                 ))}
             </ul>
-            
-            </main>
+          </main>
         </div>
     )
 }
