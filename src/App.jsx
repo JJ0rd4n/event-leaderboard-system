@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import supabaseClient from "./server/supabaseClient";
+import NewEventsModal from "./components/modals/EventsModal";
+import Navbar from "./components/navbar";
+import EventCard from "./components/EventCard"
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -25,14 +28,19 @@ function App() {
   }
 
   return (
-    <main className="container mx-auto">
-      {fetchError && (<p>{fetchError.message} : {fetchError.hint}</p>)}
-      <ul>
-        {events.map((event) => (
-          <li key={event.eventName}>{event.eventName}</li>
-        ))}
-      </ul>
-    </main>
+    <>
+      <Navbar />
+      <NewEventsModal />
+      <main>
+        {fetchError && (<p>{fetchError.message} : {fetchError.hint}</p>)}
+        <ul>
+          {events.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </ul>
+        
+      </main>
+    </>
   );
 }
 
