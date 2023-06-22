@@ -18,7 +18,7 @@ const EventView = () => {
     
     async function fetchEvent() {
         const { data, error } = await supabase
-            .from('events')
+            .from('event')
             .select()
             .eq('id', id)
             .single()
@@ -28,7 +28,7 @@ const EventView = () => {
             console.log(error.message, error.hint)
         }
         if (data) {
-            setEventName(data.eventName)
+            setEventName(data.event_name)
         }
     }
     

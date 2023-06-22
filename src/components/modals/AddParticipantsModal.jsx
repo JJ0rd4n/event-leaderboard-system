@@ -2,15 +2,12 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import supabase from "../../server/supabaseClient"
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
-export default function NewParticipantsModal() {
+export default function AddParticipantsModal() {
 
   let [isOpen, setIsOpen] = useState(false)
-  const [eventName, setEventName] = useState("")
-  const [numOfWorkouts, setNumOfWorkouts] = useState(null)
-  const [eventDate, setEventDate] = useState(new Date());
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
   const [formError, setFormError] = useState(null);
 
   const navigate = useNavigate()
@@ -25,14 +22,14 @@ export default function NewParticipantsModal() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if(!eventName || !eventDate || !numOfWorkouts) {
+    if(!firstName || !lastName) {
       setFormError("Fill in all fields")
       return
     }
 
     const { data, error } = await supabase
       .from('events')
-      .insert([{ eventName, eventDate, numOfWorkouts}])
+      .insert([{ firstName, lastName}])
 
     if (error) {
       console.log(error)
@@ -56,7 +53,7 @@ export default function NewParticipantsModal() {
           onClick={openModal}
           className="rounded-md bg-gray-600 bg-opacity-90 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
         >
-          Add Events
+          Add Participants
         </button>
       </div>
       <Transition appear show={isOpen} as={Fragment}>
@@ -93,50 +90,32 @@ export default function NewParticipantsModal() {
                   </Dialog.Title>
                   <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                       <label
-                        htmlFor="eventName"
-                        className="mb-2 block text-md font-medium text-gray-900 dark:text-white"
+                        htmlFor="firstName"
+                        className="block text-md font-medium text-gray-900 dark:text-white"
                       >
-                        Participant Name:
+                        First Name:
+                      </label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                      />
+                        
+                        <label
+                        htmlFor="lastName"
+                        className="block text-md font-medium text-gray-900 dark:text-white"
+                      >
+                        Last Name:
                       </label>
                       <input
                         type="text"
                         id="eventName"
-                        value={eventName}
-                        onChange={(e) => setEventName(e.target.value)}
-                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        className="mb-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                       />
-
-                      <label
-                        htmlFor="numOfWorkouts"
-                        className="mb-2 block text-md font-medium text-gray-900 dark:text-white"
-                      >
-                        Number of Workouts:
-                      </label>
-                      <select 
-                      id=""
-                      className="mb-2 block"
-                      onChange={(e) => setNumOfWorkouts(e.target.value)}>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                      </select>
-                        
-                      <div className="pb-64">
-                        <label
-                          htmlFor="eventDate"
-                          className="mb-2 block text-md font-medium text-gray-900 dark:text-white"
-                        >
-                          Event Date
-                        </label>
-                        <DatePicker className="flex bg-gray-200 rounded-lg" selected={eventDate} onChange={(date) => setEventDate(date)} />
-                      </div>
 
                         <button
                           type="submit"

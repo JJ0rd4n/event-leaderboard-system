@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Dashboard from "./pages/Dashboard";
 import Navbar from "./components/navbar";
 import EventView from "./components/events/EventView";
+import ParticipantView from "./components/participants/ParticipantView";
 
 function App() {
   return (
@@ -9,7 +10,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/:id" element={<EventView />} />
+        <Route path="/event/:id" element={<EventView />} />
+        <Route path="/participant/:id" element={<ParticipantView />} />
       </Routes>
     </BrowserRouter>
   );
