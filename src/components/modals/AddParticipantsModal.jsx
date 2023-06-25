@@ -28,8 +28,8 @@ export default function AddParticipantsModal() {
     }
 
     const { data, error } = await supabase
-      .from('events')
-      .insert([{ firstName, lastName}])
+      .from('participant')
+      .insert([{ firstName, lastName }])
 
     if (error) {
       console.log(error)
