@@ -16,7 +16,7 @@ const ParticipantTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { data: participants, error } = await supabase
-        .from('participant')
+        .from('participants')
         .select('*')
 
       if (error) {
@@ -25,7 +25,7 @@ const ParticipantTable = () => {
       }
 
       const { data: workouts } = await supabase
-        .from('workout')
+        .from('workouts')
         .select();
 
       const mergedData = participants.map((participant) => {

@@ -16,7 +16,7 @@ const ParticipantView = () => {
     
     async function fetchParticipant() {
         const { data, error } = await supabase
-            .from('participant')
+            .from('participants')
             .select()
             .eq('id', id)
             .single()

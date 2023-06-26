@@ -29,7 +29,7 @@ export default function WorkoutsModal({participant, workout}) {
     }
     
     const { data, error } = await supabase
-      .from('workout')
+      .from('workouts')
       .insert([
         { 
           time_mins: timeMins, 
