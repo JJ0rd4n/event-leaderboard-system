@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import supabase from "../server/supabaseClient";
 import AddParticipantsModal from "../components/modals/AddParticipantsModal";
 import WorkoutsModal from "../components/modals/WorkoutsModal";
+import Navbar from "../components/Navbar";
 
 const style = {
   tableHeaders: `px-6 py-4 text-md text-gray-500`,
@@ -48,6 +49,7 @@ const ParticipantTable = () => {
 
   return (
     <div>
+      <Navbar />
       <AddParticipantsModal />
       <div className="container flex justify-center mx-auto">
         <div className="flex flex-col">
