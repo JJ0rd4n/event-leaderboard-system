@@ -4,13 +4,12 @@ import { useNavigate } from "react-router-dom"
 import supabase from "../../server/supabaseClient"
 
 // eslint-disable-next-line react/prop-types
-export default function WorkoutsModal({participant_id}) {
+export default function WorkoutsModal({participant, workout}) {
 
   let [isOpen, setIsOpen] = useState(false)
   const [timeMins, setTimeMins] = useState(0)
   const [timeSecs, setTimeSecs] = useState(0)
-  const [rank, setRank] = useState(0)
-  const [formError, setFormError] = useState(0);
+  const [formError, setFormError] = useState(null);
 
   const navigate = useNavigate()
 
@@ -24,18 +23,25 @@ export default function WorkoutsModal({participant_id}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if(!timeMins || !timeSecs || !rank) {
+    if(!timeMins || !timeSecs) {
       setFormError("Fill in all fields")
       return
     }
-
+    
     const { data, error } = await supabase
-      .from('workouts')
-      .insert([{ timeMins, timeSecs, rank, participant_id}])
+      .from('workout')
+      .insert([
+        { 
+          time_mins: timeMins, 
+          time_secs: timeSecs, 
+          workout_nr: workout,
+          participant_id: participant.id, 
+        }
+      ])
 
     if (error) {
       console.log(error)
-      setFormError('Please fill in all the fields correctly.')
+      setFormError('An error occurred with retrieving the data from the database')
     }
 
     if (data) {
@@ -88,58 +94,50 @@ export default function WorkoutsModal({participant_id}) {
                     as="h3"
                     className="text-2xl font-medium leading-6 text-gray-900 pb-4"
                   >
-                    Add a Participant
+                    {"Add Workout " + workout + " for " + participant.first_name + " " + participant.last_name}
                   </Dialog.Title>
                   <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                    <div className="flex">
+                      <label
+                        htmlFor="timeMins"
+                        className="block text-md font-medium text-gray-900 dark:text-white"
+                      >
+                        Minutes:
+                      </label>
+                      <input
+                        type="number"
+                        id="timeMins"
+                        value={timeMins}
+                        onChange={(e) => setTimeMins(e.target.value)}
+                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                      />
+                      
+                    </div>
+                    <div className="flex">
                     <label
-                      htmlFor="timeMIns"
-                      className="block text-md font-medium text-gray-900 dark:text-white"
-                    >
-                      Minutes:
-                    </label>
-                    <input
-                      type="number"
-                      id="timeMins"
-                      value={timeMins}
-                      onChange={(e) => setTimeMins(e.target.value)}
-                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    />
-                        
-                    <label
-                      htmlFor="seconds"
-                      className="block text-md font-medium text-gray-900 dark:text-white"
-                    >
-                      Seconds:
-                    </label>
-                    <input
-                      type="number"
-                      id="eventName"
-                      value={timeSecs}
-                      onChange={(e) => setTimeSecs(e.target.value)}
-                      className="mb-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    />
+                        htmlFor="timeSecs"
+                        className="block text-md font-medium text-gray-900 dark:text-white"
+                      >
+                        Seconds:
+                      </label>
 
-                    <label
-                      htmlFor="seconds"
-                      className="block text-md font-medium text-gray-900 dark:text-white"
-                    >
-                      Seconds:
-                    </label>
-                    <input
-                      type="number"
-                      id="rank"
-                      value={rank}
-                      onChange={(e) => setRank(e.target.value)}
-                      className="mb-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    />
+                      <input
+                        type="number"
+                        id="timeSecs"
+                        value={timeSecs}
+                        onChange={(e) => setTimeSecs(e.target.value)}
+                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                      />
+                    </div>
+
+                    {formError && <p className="bg-red-700 text-white font-semibold rounded-lg flex justify-center">{formError}</p>}
 
                     <button
                       type="submit"
                       className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                     >
-                      Got it, thanks!
+                      Submit
                     </button>
-                    {formError && <p className="bg-red-700 text-white font-semibold rounded-lg flex justify-center">{formError}</p>}
                   </form>
                 </Dialog.Panel>
               </Transition.Child>

@@ -6,15 +6,14 @@ import WorkoutsModal from "../components/modals/WorkoutsModal";
 const style = {
   tableHeaders: `px-6 py-4 text-md text-gray-500`,
   table: `flex flex-col bg-gray-100 shadow-xl relative`,
-  addTimeButton: `bg-green-200 rounded-lg px-4`
+  addTimeButton: `bg-green-200 rounded-lg px-4`,
+  tableBodyRow: `px-6 py-4 text-md text-gray-500`
 }
 
 const ParticipantTable = () => {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    // Fetch the table data from your database, joining the participants and workouts tables
-    // Example API call using Supabase client library:
     const fetchData = async () => {
       const { data: participants, error } = await supabase
         .from('participant')
@@ -27,20 +26,25 @@ const ParticipantTable = () => {
 
       const { data: workouts } = await supabase
         .from('workout')
-        .select('*');
+        .select();
 
       const mergedData = participants.map((participant) => {
         const participantWorkouts = workouts.filter(
-          (workout) => workout.participantId === participant.id
+          (workout) => workout.participant_id === participant.id
         );
         return { ...participant, workouts: participantWorkouts };
       });
-
       setTableData(mergedData);
     };
 
     fetchData();
   }, []);
+
+  const getWorkoutByNumber = (participant, workoutNumber) => {
+    return participant.workouts.find(
+      (workout) => workout.workout_nr === workoutNumber
+    );
+  };
 
   return (
     <div>
@@ -51,46 +55,49 @@ const ParticipantTable = () => {
             <thead className="text-gray-700 text-base uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th className={style.tableHeaders}>Standing</th>
-                <th className={style.tableHeaders}>Name</th>
+                <th className={style.tableHeaders}>Participant</th>
                 <th className={style.tableHeaders}>Workout 1</th>
                 <th className={style.tableHeaders}>Workout 2</th>
                 <th className={style.tableHeaders}>Workout 3</th>
                 <th className={style.tableHeaders}>Workout 4</th>
+                <th className={style.tableHeaders}>Overall Points</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="bg-white divide-y divide-gray-300">
               {tableData.map((participant) => (
                 <tr key={participant.id}>
-                  <td>{participant.standing ? (participant.standing) 
+                  <td className={style.tableBodyRow}>{participant.standing ? (participant.standing) 
                   : (<p>null</p>)
-                  }
-                  </td>
-                  <td>{participant.first_name + " " + participant.last_name}</td>
-                  <td>
-                    {participant.workouts[0] ? (
-                      <>{participant.workouts[0].time_secs + " : " + participant.workouts[0].time_secs + " (" + participant.workouts[0].rank + ") "}</>) 
-                      : (<WorkoutsModal participant_id={participant.id} />)
+                  }</td>
+                  <td className={style.tableBodyRow}>{participant.first_name + " " + participant.last_name}</td>
+                  <td className={style.tableBodyRow}>
+                    {getWorkoutByNumber(participant, 1) ? (
+                      <>{participant.workouts[0].time_mins + "m : " + participant.workouts[0].time_secs + "s (" + participant.workouts[0].rank + ") "}</>) 
+                      : (<WorkoutsModal participant={participant} workout={1} />)
                     }
                   </td>
-                  <td>
-                    {participant.workouts[1] ? 
-                      (<>{participant.workouts[1].time_secs + " : " + participant.workouts[1].time_secs + " (" + participant.workouts[1].rank + ") "}</>) 
+                  <td className={style.tableBodyRow}>
+                    {getWorkoutByNumber(participant, 2) ? (
+                    <>{getWorkoutByNumber(participant, 2)?.time_mins + "m : " + getWorkoutByNumber(participant, 2)?.time_secs + "s (" + getWorkoutByNumber(participant, 2)?.rank + ") "}</>) 
                     : 
-                      (<WorkoutsModal participant_id={participant.id} />)
+                      (<WorkoutsModal participant={participant} workout={2} />)
                     }
                   </td>
-                  <td>
-                    {participant.workouts[2] ? (
-                      <>{participant.workouts[2].time_secs + " : " + participant.workouts[2].time_secs + " (" + participant.workouts[2].rank + ") "}</>) 
-                      : (<WorkoutsModal participant_id={participant.id} />)
+                  <td className={style.tableBodyRow}>
+                    {getWorkoutByNumber(participant, 3) ? (
+                      <>{getWorkoutByNumber(participant, 3)?.time_mins + "m : " + getWorkoutByNumber(participant, 3)?.time_secs + "s (" + getWorkoutByNumber(participant, 3)?.rank + ") "}</>) 
+                      : (<WorkoutsModal participant={participant} workout={3} />)
                     }
                   </td>
-                  <td>
-                    {participant.workouts[3] ? (
-                      <>{participant.workouts[3].time_secs + " : " + participant.workouts[3].time_secs + " (" + participant.workouts[3].rank + ") "}</>) 
-                      : (<WorkoutsModal participant_id={participant.id} />)
+                  <td className={style.tableBodyRow}>
+                    {getWorkoutByNumber(participant, 4) ? (
+                      <>{getWorkoutByNumber(participant, 4)?.time_mins + "m : " + getWorkoutByNumber(participant, 4)?.time_secs + "s (" + getWorkoutByNumber(participant, 4)?.rank + ") "}</>) 
+                      : (<WorkoutsModal participant={participant} workout={4} />)
                     }
                   </td>
+                  <td className={style.tableBodyRow}>{participant.overall ? (participant.standing) 
+                  : (<p>null</p>)
+                  }</td>
                 </tr>
               ))}
             </tbody>

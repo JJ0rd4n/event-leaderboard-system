@@ -29,7 +29,7 @@ export default function AddParticipantsModal() {
 
     const { data, error } = await supabase
       .from('participant')
-      .insert([{ firstName, lastName }])
+      .insert([{ first_name: firstName, last_name: lastName }])
 
     if (error) {
       console.log(error)
@@ -103,7 +103,7 @@ export default function AddParticipantsModal() {
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                       />
                         
-                        <label
+                      <label
                         htmlFor="lastName"
                         className="block text-md font-medium text-gray-900 dark:text-white"
                       >
@@ -111,7 +111,7 @@ export default function AddParticipantsModal() {
                       </label>
                       <input
                         type="text"
-                        id="eventName"
+                        id="lastName"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         className="mb-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
@@ -121,7 +121,7 @@ export default function AddParticipantsModal() {
                           type="submit"
                           className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                         >
-                          Got it, thanks!
+                          Submit
                         </button>
                       {formError && <p className="bg-red-700 text-white font-semibold rounded-lg flex justify-center">{formError}</p>}
                     </form>
