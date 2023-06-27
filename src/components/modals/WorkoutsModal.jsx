@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import supabase from "../../server/supabaseClient"
 
 // eslint-disable-next-line react/prop-types
-export default function WorkoutsModal({participant, workout}) {
+export default function WorkoutsModal({participant, workoutNr}) {
 
   let [isOpen, setIsOpen] = useState(false)
   const [timeMins, setTimeMins] = useState(0)
@@ -34,7 +34,7 @@ export default function WorkoutsModal({participant, workout}) {
         { 
           time_mins: timeMins, 
           time_secs: timeSecs, 
-          workout_nr: workout,
+          workout_nr: workoutNr,
           participant_id: participant.id, 
         }
       ])
@@ -94,7 +94,7 @@ export default function WorkoutsModal({participant, workout}) {
                     as="h3"
                     className="text-2xl font-medium leading-6 text-gray-900 pb-4"
                   >
-                    {"Add Workout " + workout + " for " + participant.first_name + " " + participant.last_name}
+                    {"Add Workout " + workoutNr + " for " + participant.first_name + " " + participant.last_name}
                   </Dialog.Title>
                   <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                     <div className="flex">
