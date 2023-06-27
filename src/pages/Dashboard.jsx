@@ -44,17 +44,17 @@ const ParticipantTable = () => {
         if (workoutRanksError) {
           console.error('Error fetching workout ranks:', workoutRanksError);
         } else {
-          // Update participants with workout details, ranks, and times
+
           const updatedParticipants = updateWorkoutRanks(participantsData, workoutsData, workoutRanksData);
+
+          const standings = calculateStandings(updatedParticipants);
   
-          setParticipants(updatedParticipants);
+          setParticipants(standings);
         }
       }
     }
   };
   
-  
-
   const updateWorkoutRanks = (participants, workouts, workoutRanks) => {
     const updatedParticipants = participants.map((participant) => {
       const participantWorkouts = workouts.filter((workout) => workout.participant_id === participant.id);
@@ -83,6 +83,17 @@ const ParticipantTable = () => {
     });
   
     return updatedParticipants;
+  };
+
+  const calculateStandings = (participants) => {
+    const sortedParticipants = [...participants].sort((a, b) => b.overallScore - a.overallScore);
+
+    const standings = sortedParticipants.map((participant, index) => ({
+      ...participant,
+      standing: index + 1,
+    }));
+
+    return standings;
   };
 
   return (
