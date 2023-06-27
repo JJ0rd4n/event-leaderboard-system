@@ -85,17 +85,28 @@ const ParticipantTable = () => {
     return updatedParticipants;
   };
 
-  const calculateStandings = (participants) => {
-    const sortedParticipants = [...participants].sort((a, b) => b.overallScore - a.overallScore);
+const calculateStandings = (participants) => {
+  const sortedParticipants = [...participants].sort((a, b) => {
+    if (a.overallScore === 0 && b.overallScore === 0) {
+      return a.first_name.localeCompare(b.first_name); // Sort alphabetically if both have an overall score of zero
+    } else if (a.overall_points === 0) {
+      return 1; // Move participant with an overall score of zero to the bottom
+    } else if (b.overall_points === 0) {
+      return -1; // Move participant with an overall score of zero to the bottom
+    } else {
+      return a.overall_points - b.overall_points; // Sort by overall score in ascending order
+    }
+  });
 
-    const standings = sortedParticipants.map((participant, index) => ({
-      ...participant,
-      standing: index + 1,
-    }));
+  const standings = sortedParticipants.map((participant, index) => ({
+    ...participant,
+    standing: index + 1,
+  }));
 
-    return standings;
-  };
+  return standings;
+};
 
+  
   return (
     <div>
       <Navbar />
